@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build Docker Image
 
 on:
   push:
@@ -7,12 +7,13 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file build/Dockerfile --tag ghosts-cms:latest
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+     - name: Build the Docker image
+      working-directory: build
+      run: docker build . --file Dockerfile --tag ghosts-cms:latest
