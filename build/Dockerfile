@@ -4,6 +4,6 @@ COPY app/ /app
 RUN apt-get update && \
     apt-get install -y git && \
     rm -rf /var/lib/apt/lists/*
-RUN yarn setup
+#RUN yarn setup
 ENV NODE_ENV production
 
