@@ -63,16 +63,12 @@ jobs:
       id: build-and-push
       uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
       with:
-        context: .
+        context: build
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-
-    - name: Build the Docker image
-      working-directory: build
-      run: docker build . --file Dockerfile --tag ghosts-cms:latest
 
     - name: Sign the published Docker image
       if: ${{ github.event_name != 'pull_request' }}
