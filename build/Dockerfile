@@ -1,8 +1,18 @@
-FROM node:16.20.0-buster-slim
+FROM node:16-bullseye-slim
 
-ENV NODE_ENV=production
+# остальные инструкции до строки ENV NODE_ENV production
 
-WORKDIR /app
+ENV NODE_ENV production
+
+# Копирование и запуск скрипта install.sh
 COPY install.sh .
-
 RUN chmod +x ./install.sh && ./install.sh
+
+WORKDIR $GHOST_INSTALL
+VOLUME $GHOST_CONTENT
+
+COPY docker-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 2368
+CMD ["node", "current/index.js"]
