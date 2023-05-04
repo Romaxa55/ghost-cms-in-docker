@@ -1,3 +1,0 @@
-[submodule "build/app"]
-	path = build/app
-	url = https://github.com/TryGhost/Ghost.git
