@@ -1,10 +1,8 @@
 FROM node:16.20.0-buster-slim
+
+ENV NODE_ENV=production
+
 WORKDIR /app
-COPY app/ /app
-RUN apt-get update && \
-    apt-get install -y git python && \
-    rm -rf /var/lib/apt/lists/*
+COPY install.sh .
 
-RUN yarn setup
-ENV NODE_ENV production
-
+RUN chmod +x ./install.sh && ./install.sh
