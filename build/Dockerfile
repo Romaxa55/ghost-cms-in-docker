@@ -5,6 +5,6 @@ RUN apt-get update && \
     apt-get install -y git python && \
     rm -rf /var/lib/apt/lists/*
 
-RUN yarn setup
+RUN cd Ghost && yarn setup
 ENV NODE_ENV production
 
