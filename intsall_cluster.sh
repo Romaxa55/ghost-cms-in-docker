@@ -6,6 +6,30 @@ SAMPLE_INVENTORY_DIR="$KUBESPRAY_DIR/inventory/sample/"
 INVENTORY_DIR="$KUBESPRAY_DIR/inventory/mycluster"
 HOSTS_FILE="$INVENTORY_DIR/hosts.yaml"
 
+# Проверка наличия утилиты pip
+if ! command -v pip &> /dev/null; then
+    # Установка pip для Linux и MacOS
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        echo "Установка pip для Linux"
+        sudo apt-get update && sudo apt-get install python3-pip -y
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "Установка pip для MacOS"
+        sudo easy_install pip
+    else
+        echo "Операционная система не поддерживается"
+        exit 1
+    fi
+fi
+
+# Проверка наличия зависимостей из файла requirements.txt
+if ! pip freeze | grep -q -F -r -f "$KUBESPRAY_DIR/requirements.txt"; then
+    # Установка зависимостей
+    echo "Установка зависимостей из requirements.txt"
+    pip3 install -r "$KUBESPRAY_DIR/requirements.txt"
+else
+    echo "Зависимости из requirements.txt уже установлены"
+fi
+
 function create_inventory() {
   # Создание инвентаря, если он не существует
   if [ ! -d "$INVENTORY_DIR" ]; then
