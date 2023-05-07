@@ -4,8 +4,8 @@ os=$(uname)
 
 # Установка python3-pip для Ubuntu/Debian
 if [ "$os" = "Linux" ]; then
-    sudo apt-get update
-    sudo apt-get install python3-pip
+    apt-get update
+    apt-get install python3-pip
 # Установка python3-pip для macOS
 elif [ "$os" = "Darwin" ]; then
     sudo easy_install pip
