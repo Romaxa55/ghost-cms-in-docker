@@ -52,8 +52,8 @@ fi
 
 # Проверяем, существует ли файл ~/.kube/config
 if [ ! -f ~/.kube/config ]; then
-    USER=$(cat hosts.yaml | awk '/master/,/ansible_user/ {if(/ansible_user/) print $2}')
-    SERVER=$(cat hosts.yaml | awk '/master/,/ansible_host/ {if(/ansible_host/) print $2}')
+    USER=$(cat kubespray/inventory/my_cluster/hosts.yaml | awk '/master/,/ansible_user/ {if(/ansible_user/) print $2}')
+    SERVER=$(cat kubespray/inventory/my_cluster/hosts.yaml | awk '/master/,/ansible_host/ {if(/ansible_host/) print $2}')
     mkdir -p ~/.kube || true
     scp $USER@$SERVER:/etc/kubernetes/admin.conf ~/.kube/config
     # Заменяем 127.0.0.1 на IP-адрес из переменной $SERVER в файле config
