@@ -240,3 +240,8 @@ Temporary Items
 
 /kubespray-2.21.0/inventory/mycluster/
 /hosts.yaml
+/mypackage.egg-info/dependency_links.txt
+/mypackage.egg-info/PKG-INFO
+/mypackage.egg-info/requires.txt
+/mypackage.egg-info/SOURCES.txt
+/mypackage.egg-info/top_level.txt
