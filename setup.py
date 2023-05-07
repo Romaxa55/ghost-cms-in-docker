@@ -105,7 +105,7 @@ class KubesprayClusterSetup:
 
 
     def main(self):
-        # self.ssh_check_and_copy_id()
+        self.ssh_check_and_copy_id()
         self.build_inventory()
 
 
