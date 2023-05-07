@@ -1,4 +1,5 @@
 #!/bin/bash
+pip install setuptools
 
 # Проверяем, существует ли директория kubespray/inventory/my_cluster
 if [ ! -d "kubespray/inventory/my_cluster" ]; then
