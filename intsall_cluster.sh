@@ -22,8 +22,8 @@ else
     echo "Директория kubespray/inventory/my_cluster уже существует, копирование не будет выполнено."
 fi
 python3 kubespray/setup.py install
-python3 setup.py
 pip3 uninstall -y ruamel.yaml.clib
+python3 setup.py
 
 # Запрос на запуск установки кластера
 echo "Вы хотите установить кластер Kubernetes? (y/n)"
