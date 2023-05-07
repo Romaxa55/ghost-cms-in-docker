@@ -43,7 +43,7 @@ frontend {{ haproxy_frontend_name }}
 # Backend configuration
 backend {{ haproxy_backend_name }}
 {% for backend in vars.workers %}
-    server {{backend.name}} {{backend.address}}:{{backend.port}} check weight 1
+    server {{ backend.name }} {{ hostvars[backend.name]['ip'] }}:{{ backend.port }} check weight 1
 {% endfor %}
 
 frontend stats

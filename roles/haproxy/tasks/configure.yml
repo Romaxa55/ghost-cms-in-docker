@@ -18,13 +18,13 @@
     mode: 0644
   notify: reload rsyslog
 
-- name: Copy HAProxy configuration in place.
-  become: no
-  template:
-    src: haproxy.cfg.j2
-    dest: ./generated_haproxy.cfg
-    mode: 0644
-  delegate_to: localhost
+#- name: Copy HAProxy configuration in place.
+#  become: no
+#  template:
+#    src: haproxy.cfg.j2
+#    dest: ./generated_haproxy.cfg
+#    mode: 0644
+#  delegate_to: localhost
 
 
 - name: Copy HAProxy configuration in place.
