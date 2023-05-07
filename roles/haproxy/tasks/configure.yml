@@ -1,0 +1,27 @@
+- name: Ensure /etc/haproxy/ directory exists
+  file:
+    path: "/etc/haproxy/"
+    state: directory
+
+- name: Copy haproxy logrotate config file
+  copy:
+    src: "{{ role_path }}/files/haproxy/logrotate"
+    dest: /etc/logrotate.d/haproxy
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy syslog configuration in place /etc/rsyslog.d/49-haproxy.conf.
+  template:
+    src: 49-haproxy.conf.j2
+    dest: /etc/rsyslog.d/49-haproxy.conf
+    mode: 0644
+  notify: reload rsyslog
+
+- name: Copy HAProxy configuration in place.
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: restart haproxy

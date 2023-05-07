@@ -1,0 +1,15 @@
+- name: Install haproxy
+  hosts: haproxy
+  gather_facts: true
+  roles:
+    - role: haproxy
+      vars:
+        haproxy_domain: roshamagin.site
+        haproxy_version: 2.7.8
+        workers:
+          - name: "worker1"
+            address: 37.143.129.92
+            port: 32443
+          - name: "worker2"
+            address: 198.244.241.195
+            port: 32443

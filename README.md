@@ -5,7 +5,7 @@
 ## Инструкция по развертки кластера
 
 
-1Запустите скрипт install_cluster.sh:
+1. Запустите скрипт install_cluster.sh:
 
 ```bash
 sudo ./install_cluster.sh
@@ -58,4 +58,55 @@ kubectl -n kubernetes-dashboard create token admin-user
 ```
 
 ## Установка Helm на Linux и macOS включает следующие шаги:
+
+```bash
+
+export PSQL_PASSWORD=pass
+
+kubectl create namespace ghost-cms
+kubectl config set-context --current --namespace ghost-cms
+helm install postgresql --version 11.0.0 \
+ --set primary.containerSecurityContext.enabled=false \
+ --set primary.podSecurityContext.enabled=false \
+ --set primary.podSecurityContext.fsGroup=0 \
+ --set primary.containerSecurityContext.runAsUser=0 \
+ oci://registry-1.docker.io/bitnamicharts/postgresql-ha
+
+kubectl get pods -n ghost-cms
+```
+# Подключение к DB
+```bash
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace ghost-cms postgresql-postgresql-ha-postgresql -o jsonpath="{.data.password}" | base64 -d)
+export REPMGR_PASSWORD=$(kubectl get secret --namespace ghost-cms postgresql-postgresql-ha-postgresql -o jsonpath="{.data.repmgr-password}" | base64 -d)
+kubectl run postgresql-postgresql-ha-client --rm --tty -i --restart='Never' --namespace ghost-cms --image docker.io/bitnami/postgresql-repmgr:15.2.0-debian-11-r26 --env="PGPASSWORD=$POSTGRES_PASSWORD"  \
+        --command -- psql -h postgresql-postgresql-ha-pgpool -p 5432 -U ghost -d ghost-cms
+
+```
+To connect to your database from outside the cluster execute the following commands:
+```bash
+kubectl port-forward --namespace ghost-cms svc/postgresql-postgresql-ha-pgpool 5432:5432 &
+psql -h 127.0.0.1 -p 5432 -U ghost -d ghost-cms
+```
+
+Update
+```bash
+export PSQL_PASSWORD=pass
+
+helm upgrade postgresql \
+    --set postgresql.username=ghost \
+    --set postgresql.password=${PSQL_PASSWORD} \
+    --set postgresql.database=ghost \
+    --set pgpool.adminPassword=${PSQL_PASSWORD} \
+    --set global.pgpool.adminUsername=ghost  \
+    --set postgresql.repmgrPassword=${PSQL_PASSWORD}  \
+    oci://registry-1.docker.io/bitnamicharts/postgresql-ha
+
+```
+
+Uninstall
+```bash
+helm uninstall postgresql
+```
+
+
 

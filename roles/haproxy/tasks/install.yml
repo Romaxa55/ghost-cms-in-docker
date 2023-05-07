@@ -1,0 +1,80 @@
+---
+- name: Check if haproxy is installed
+  command: which haproxy
+  changed_when: false
+  failed_when: haproxy_installed.rc not in [0,1]
+  register: haproxy_installed
+
+- name: Update apt cache.
+  apt: update_cache=yes cache_valid_time=600 name=ca-certificates
+  when:
+    - ansible_os_family == "Debian"
+    - haproxy_installed.rc not in [ 0 ]
+
+- name: install {{ depend }} package on debian systems
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ depend }}"
+  when:
+    - ansible_os_family == "Debian"
+    - haproxy_installed.rc not in [ 0 ]
+
+- name: Download haproxy https://www.haproxy.org/download/2.7/src/haproxy-{{ haproxy_version }}.tar.gz
+  ansible.builtin.unarchive:
+    src: https://www.haproxy.org/download/2.7/src/haproxy-{{ haproxy_version }}.tar.gz
+    dest: $HOME/
+    remote_src: yes
+  when: haproxy_installed.rc not in [ 0 ]
+
+- name: Build the $HOME/haproxy-{{ haproxy_version }}
+  make:
+    chdir: $HOME/haproxy-{{ haproxy_version }}
+    params:
+      USE_PCRE_JIT: 1
+      USE_ZLIB: 1
+      USE_PCRE: 1
+      USE_OPENSSL: 1
+      USE_TFO: 1
+      USE_LIBCRYPT: 1
+      USE_THREAD: 1
+      USE_SYSTEMD: 1
+      STATIC_PCRE: 1
+      TARGET: linux-glibc
+  when: haproxy_installed.rc not in [ 0 ]
+
+- name: Run 'install' target as root
+  make:
+    chdir: $HOME/haproxy-{{ haproxy_version }}
+    target: install
+  become: yes
+  when: haproxy_installed.rc not in [ 0 ]
+
+#- name: remove {{ depend }} package on debian systems
+#  apt:
+#    name: "{{ item }}"
+#    state: absent
+#    update_cache: yes
+#  with_items: "{{ depend }}"
+#  when:
+#    - ansible_os_family == "Debian"
+#    - haproxy_installed.rc not in [ 0 ]
+#    - item != "ca-certificates"
+
+- name: Delete content & directory
+  file:
+    state: absent
+    path: $HOME/haproxy-{{ haproxy_version }}
+  when:
+    - haproxy_installed.rc not in [ 0 ]
+
+- name: Haproxy | Create Unit file
+  template: src=haproxy.service.j2 dest=/lib/systemd/system/haproxy.service mode=644
+  notify:
+    - reload systemctl
+  when:
+    - haproxy_installed.rc not in [ 0 ]
+
+- name: Ensure HAProxy is enabled on boot.
+  service: name=haproxy enabled=yes

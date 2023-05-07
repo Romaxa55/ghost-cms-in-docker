@@ -1,0 +1,61 @@
+---
+haproxy_version: 2.7.8
+haproxy_domain: example.com
+haproxy_socket: /var/lib/haproxy/stats
+haproxy_chroot: /var/lib/haproxy
+haproxy_user: root
+haproxy_group: root
+
+# Frontend settings.
+haproxy_frontend_name: 'entrypoint'
+haproxy_backend_name: 'backend'
+
+haproxy_frontend_port_http: 80
+haproxy_frontend_port_https: 443
+haproxy_frontend_mode: 'http'
+haproxy_backend_balance_method: 'roundrobin'
+option_httpchk: true
+option_httpchk_GET: '/'
+http_check_status: 200
+
+# Extra global vars (see README for example usage).
+haproxy_global_vars:
+  - log /dev/log  local0
+  - log /dev/log  local1 notice
+  - setenv DOMAIN_MAIN {{ haproxy_domain }}
+  - ulimit-n 1048575
+  - tune.rcvbuf.client 33554432
+  - tune.rcvbuf.server 33554432
+  - tune.sndbuf.client 33554432
+  - tune.sndbuf.server 33554432
+  - tune.maxaccept -1
+  - tune.maxrewrite 1024
+  - tune.bufsize 16384
+  - tune.http.cookielen 63
+  - tune.http.maxhdr 101
+  - tune.h2.max-concurrent-streams 1000
+  - tune.h2.initial-window-size 1048576
+  - tune.pattern.cache-size 100000
+  - tune.idletimer 600
+  - tune.maxrewrite 1460
+
+# Default haproxy timeouts
+haproxy_connect_timeout: 5s
+haproxy_client_timeout: 60s
+haproxy_server_timeout: 120s
+haproxy_client_fin: 1s
+haproxy_server_fin: 1s
+haproxy_http_request: 10s
+haproxy_http_keep_alive: 50s
+haproxy_retries: 3
+haproxy_maxconn: 524288
+
+# Packets for compile haproxy from source code.
+depend:
+  - ca-certificates
+  - build-essential
+  - libpcre3-dev
+  - libsystemd-dev
+  - libz-dev
+  - libssl-dev
+

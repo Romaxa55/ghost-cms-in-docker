@@ -1,0 +1,9 @@
+---
+- name: restart haproxy
+  systemd: name=haproxy state=restarted
+
+- name: reload systemctl
+  systemd: daemon_reload=yes
+
+- name: reload rsyslog
+  systemd: name=rsyslog state=restarted

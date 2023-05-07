@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+        - name: ghost
+          image: ghcr.io/romaxa55/ghost-cms-in-docker:master
+          ports:
+            - containerPort: 2368
+          env:
+            - name: database__client
+              value: mysql
+            - name: database__connection__host
+              value: db
+            - name: database__connection__user
+              value: root
+            - name: database__connection__password
+              value: example
+            - name: database__connection__database
+              value: ghost
+            - name: url
+              value: https://roshamagin.site
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost-service
+spec:
+  selector:
+    app: ghost
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 2368
+  type: LoadBalancer

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: ghost-cms-quota
+  namespace: ghost-cms
+spec:
+  hard:
+    requests.storage: 50Gi

@@ -1,0 +1,62 @@
+userlist basic-auth-list
+  group is-regular-user
+  group is-admin
+  user admin password $5$kiB/2dDS9j0z9HAU$nlaP8qnlW81QtQSHh9vED/aSm0aTPS0NwPki2ehLv6B groups is-admin
+
+global
+  user {{ haproxy_user }}
+  group {{ haproxy_group }}
+{% for global_var in haproxy_global_vars %}
+  {{ global_var }}
+{% endfor %}
+
+defaults
+  log global
+  mode http
+  option http-server-close
+  option httplog
+  option dontlognull
+  retries {{ haproxy_retries }}
+  maxconn {{ haproxy_maxconn }}
+{% if haproxy_version is version('1.4', '<=') %}
+  contimeout {{ haproxy_connect_timeout }}
+  clitimeout {{ haproxy_client_timeout }}
+  srvtimeout {{ haproxy_server_timeout }}
+{% else %}
+  timeout connect {{ haproxy_connect_timeout }}
+  timeout client {{ haproxy_client_timeout }}
+  timeout server {{ haproxy_server_timeout }}
+  timeout client-fin {{ haproxy_client_fin }}
+  timeout server-fin {{ haproxy_server_fin }}
+  timeout http-request {{ haproxy_http_request }}
+  timeout http-keep-alive {{ haproxy_http_keep_alive }}
+{% endif %}
+
+#  Frontend configuration
+frontend {{ haproxy_frontend_name }}
+    bind *:443 ssl crt /etc/ssl/{{ haproxy_domain }}/{{ haproxy_domain }}.pem
+    bind *:{{ haproxy_frontend_port_http }}
+    mode http
+    option tcplog
+    default_backend {{ haproxy_backend_name }}
+
+# Backend configuration
+backend {{ haproxy_backend_name }}
+{% for backend in vars.workers %}
+    server {{backend.name}} {{backend.address}}:{{backend.port}} check weight 1
+{% endfor %}
+
+frontend stats
+    bind 127.0.0.1:9999
+    mode http
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+
+backend stats
+    option httpchk
+    http-check send hdr User-Agent "Haproxy-Check" hdr Accept "*/*" hdr Accept-Language "en;fr;ru" hdr Host {{ haproxy_domain }} meth GET uri {{ option_httpchk_GET }}
+    http-check expect status 401
+    server server1 127.0.0.1:9999 check
+
