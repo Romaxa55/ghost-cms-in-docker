@@ -1,4 +1,5 @@
 #!/bin/bash
+export ANSIBLE_HOST_KEY_CHECKING=False
 # Определение операционной системы
 os=$(uname)
 
