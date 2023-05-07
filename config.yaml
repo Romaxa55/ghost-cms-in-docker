@@ -1,8 +1,7 @@
 kubespray:
   version: "2.21.0"
   path: "kubespray"
-  sample_inventory_hosts_file: "kubespray/hosts_template.yaml"
-  hosts_file: "hosts.yaml"
+  hosts_file: "kubespray/inventory/my_cluster/hosts.yaml"
   requirements_file: "requirements.txt"
 
 nodes:
