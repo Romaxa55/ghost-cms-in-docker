@@ -23,6 +23,7 @@ else
 fi
 python3 kubespray/setup.py install
 python3 setup.py
+pip3 uninstall -y ruamel.yaml.clib
 
 # Запрос на запуск установки кластера
 echo "Вы хотите установить кластер Kubernetes? (y/n)"
