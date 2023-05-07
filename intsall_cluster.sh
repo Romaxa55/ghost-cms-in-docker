@@ -57,9 +57,8 @@ if [ ! -f ~/.kube/config ]; then
     mkdir -p ~/.kube || true
     scp $USER@$SERVER:/etc/kubernetes/admin.conf ~/.kube/config
     # Заменяем 127.0.0.1 на IP-адрес из переменной $SERVER в файле config
-    sed -i '' "s/127.0.0.1/$SERVER/g" ~/.kube/config
+    sed -i.bak "s/127.0.0.1/$SERVER/g" ~/.kube/config && rm ~/.kube/config.bak
 else
     echo "Файл config уже существует, код не будет выполнен."
 fi
 
-kubectl get nodes
