@@ -1,5 +1,18 @@
 #!/bin/bash
-pip install setuptools
+# Определение операционной системы
+os=$(uname)
+
+# Установка python3-pip для Ubuntu/Debian
+if [ "$os" = "Linux" ]; then
+    sudo apt-get update
+    sudo apt-get install python3-pip
+# Установка python3-pip для macOS
+elif [ "$os" = "Darwin" ]; then
+    sudo easy_install pip
+    sudo pip install --upgrade pip
+else
+    echo "Неизвестная операционная система. Установка python3-pip не выполнена."
+fi
 
 # Проверяем, существует ли директория kubespray/inventory/my_cluster
 if [ ! -d "kubespray/inventory/my_cluster" ]; then
