@@ -31,7 +31,7 @@ read -r INSTALL_ANSWER
 if [[ "$INSTALL_ANSWER" =~ [yY] ]]; then
   # Запуск плейбука для установки кластера
   echo "Запуск плейбука для установки кластера"
-  ansible-playbook -i hosts.yaml kubespray/cluster.yml -b --become-user=root
+  ansible-playbook -i kubespray/inventory/my_cluster/hosts.yaml kubespray/cluster.yml -b --become-user=root
 else
   echo "Установка кластера отменена."
 fi
@@ -43,7 +43,7 @@ read -r INSTALL_ANSWER
 if [[ "$INSTALL_ANSWER" =~ [yY] ]]; then
   # Запуск плейбука для установки кластера
   echo "Запуск плейбука для установки HAproxy"
-  ansible-playbook -i hosts.yaml playbook_haproxy.yaml -b --become-user=root
+  ansible-playbook -i kubespray/inventory/my_cluster/hosts.yaml playbook_haproxy.yaml -b --become-user=root
 else
   echo "Установка HAproxy отменена."
 fi
