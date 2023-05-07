@@ -1,0 +1,29 @@
+kubespray:
+  version: "2.21.0"
+  path: "kubespray"
+  sample_inventory_hosts_file: "kubespray/hosts_template.yaml"
+  hosts_file: "hosts.yaml"
+  requirements_file: "requirements.txt"
+
+nodes:
+  master:
+    - name: "master"
+      user: "root"
+      address: "147.78.2.233"
+  worker:
+    - name: "worker1"
+      user: "root"
+      address: "147.78.2.230"
+    - name: "worker2"
+      user: "root"
+      address: "147.78.2.240"
+  haproxy:
+    - name: "haproxy1"
+      user: "root"
+      address: "147.78.1.111"
+    - name: "haproxy2"
+      user: "root"
+      address: "103.97.203.200"
+
+ansible:
+  user: "root"

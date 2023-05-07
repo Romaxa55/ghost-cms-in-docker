@@ -239,3 +239,4 @@ Temporary Items
 .apdisk
 
 /kubespray-2.21.0/inventory/mycluster/
+/hosts.yaml
