@@ -7,9 +7,9 @@
         haproxy_domain: roshamagin.site
         haproxy_version: 2.7.8
         workers:
-          - name: "node2"
-            address: "{{ hostvars['node2'].ip }}"
+          - name: "worker1"
+            address: "{{ hostvars['worker1'].ip }}"
             port: 32443
-          - name: "node3"
-            address: "{{ hostvars['node3'].ip }}"
+          - name: "worker2"
+            address: "{{ hostvars['worker2'].ip }}"
             port: 32443
