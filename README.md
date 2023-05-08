@@ -63,15 +63,12 @@ kubectl -n kubernetes-dashboard create token admin-user
 
 export PSQL_PASSWORD=pass
 
-kubectl create namespace ghost-cms
-kubectl config set-context --current --namespace ghost-cms
-helm install postgresql --version 11.0.0 \
- --set primary.containerSecurityContext.enabled=false \
- --set primary.podSecurityContext.enabled=false \
- --set primary.podSecurityContext.fsGroup=0 \
- --set primary.containerSecurityContext.runAsUser=0 \
- oci://registry-1.docker.io/bitnamicharts/postgresql-ha
+kubectl create namespace ghost
+kubectl config set-context --current --namespace ghost
+helm install postgresql oci://registry-1.docker.io/bitnamicharts/postgresql-ha
+helm install -n ghost postgres oci://registry-1.docker.io/bitnamicharts/postgresql-ha --version 11.4.1 -f k8s/values.yml
 
+kubectl apply -f k8s/PersistentVolume.yaml
 kubectl get pods -n ghost-cms
 ```
 # Подключение к DB
@@ -90,7 +87,8 @@ psql -h 127.0.0.1 -p 5432 -U ghost -d ghost-cms
 
 Update
 ```bash
-export PSQL_PASSWORD=pass
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace ghost postgres-postgresql-ha-postgresql -o jsonpath="{.data.password}" | base64 -d)
+export REPMGR_PASSWORD=$(kubectl get secret --namespace ghost postgres-postgresql-ha-postgresql -o jsonpath="{.data.repmgr-password}" | base64 -d)
 
 helm upgrade postgresql \
     --set postgresql.username=ghost \

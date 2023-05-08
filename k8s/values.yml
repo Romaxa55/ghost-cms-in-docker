@@ -1,0 +1,20 @@
+global:
+  postgresql:
+    database: ghost
+    password: superpassword_xD
+    repmgrPassword: replication-xD
+  pgpool:
+    adminUsername: cms
+    adminPassword:  superpassword_xD
+  storageClass: "ghost-cms-storage"
+
+pgpool:
+  replicaCount: 0
+  image:
+    tag: latest
+persistence:
+  size: 10Gi
+volumePermissions:
+  enabled: false
+#  podSecurityContext:
+#    runAsUser: 0
