@@ -9,8 +9,8 @@ if [ "$os" = "Linux" ]; then
     apt-get install -y python3-pip
 # Установка python3-pip для macOS
 elif [ "$os" = "Darwin" ]; then
-    sudo easy_install pip
-    sudo pip install --upgrade pip
+    easy_install pip
+    pip install --upgrade pip
 else
     echo "Неизвестная операционная система. Установка python3-pip не выполнена."
 fi

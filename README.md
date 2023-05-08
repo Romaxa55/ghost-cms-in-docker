@@ -29,7 +29,7 @@ export KUBECONFIG=~/.kube/config
 
 После этого вы можете использовать команду `kubectl` для управления кластером.
 
-## Установить Dashboard UI
+## Установить Dashboard UI k8s
 1. Установите Kubernetes Dashboard с помощью команды:
 
 ```bash
