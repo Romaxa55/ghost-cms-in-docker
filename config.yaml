@@ -8,14 +8,14 @@ nodes:
   master:
     - name: "master"
       user: "root"
-      address: "147.78.2.233"
+      address: "185.113.143.175"
   worker:
     - name: "worker1"
       user: "root"
-      address: "147.78.2.230"
+      address: "185.113.143.177"
     - name: "worker2"
       user: "root"
-      address: "147.78.2.240"
+      address: "185.113.143.176"
   haproxy:
     - name: "haproxy1"
       user: "root"
