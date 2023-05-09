@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # Остальные сервисы (etcd, postgres-primary, postgres-secondary)
+
+  pgbouncer:
+    image: edoburu/pgbouncer:1.16.0
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: your_postgres_password
+      DB_HOST: postgres-primary
+      DB_PORT: 5432
+      POOL_MODE: session
+      MAX_CLIENT_CONN: 100
+      DEFAULT_POOL_SIZE: 20
+    networks:
+      - postgres-network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+   etcd:
+    image: quay.io/coreos/etcd:v3.5.0
+    networks:
+      - etcd-network
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    environment:
+      ETCD_NAME: '{{.Node.Hostname}}'
+      ETCD_DATA_DIR: '/etcd-data'
+      ETCD_LISTEN_CLIENT_URLS: 'http://0.0.0.0:2379'
+      ETCD_ADVERTISE_CLIENT_URLS: 'http://{{.Node.Hostname}}:2379'
+      ETCD_LISTEN_PEER_URLS: 'http://0.0.0.0:2380'
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: 'http://{{.Node.Hostname}}:2380'
+      ETCD_INITIAL_CLUSTER_TOKEN: 'etcd-cluster'
+      ETCD_INITIAL_CLUSTER: 'etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380'
+      ETCD_AUTO_COMPACTION_RETENTION: '1'
+    command:
+      - /usr/local/bin/etcd
+      - -advertise-client-urls=http://etcd:2379
+      - -listen-client-urls=http://0.0.0.0:2379
+
+  postgres-primary:
+    image: bitnami/patroni:2.1.1
+    environment:
+      PATRONI_NAME: postgres-primary
+      PATRONI_SCOPE: postgres
+      PATRONI_POSTGRESQL_DATA_DIR: /bitnami/postgresql/data
+      PATRONI_POSTGRESQL_USERNAME: postgres
+      PATRONI_POSTGRESQL_PASSWORD: your_postgres_password
+      PATRONI_POSTGRESQL_DATABASE: your_database_name
+      PATRONI_RESTAPI_USERNAME: patroni
+      PATRONI_RESTAPI_PASSWORD: your_patroni_password
+      PATRONI_ETCD_URL: http://etcd:2379
+    volumes:
+      - postgres-primary-data:/bitnami/postgresql/data
+    networks:
+      - postgres-network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  postgres-secondary:
+    image: bitnami/patroni:2.1.1
+    environment:
+      PATRONI_NAME: postgres-secondary
+      PATRONI_SCOPE: postgres
+      PATRONI_POSTGRESQL_DATA_DIR: /bitnami/postgresql/data
+      PATRONI_POSTGRESQL_USERNAME: postgres
+      PATRONI_POSTGRESQL_PASSWORD: your_postgres_password
+      PATRONI_POSTGRESQL_DATABASE: your_database_name
+      PATRONI_RESTAPI_USERNAME: patroni
+      PATRONI_RESTAPI_PASSWORD: your_patroni_password
+      PATRONI_ETCD_URL: http://etcd:2379
+    volumes:
+      - postgres-secondary-data:/bitnami/postgresql/data
+    networks:
+      - postgres-network
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+
+volumes:
+  postgres-primary-data:
+  postgres-secondary-data:
+
+networks:
+  postgres-network:
+    external: true
