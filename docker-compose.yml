@@ -1,26 +1,51 @@
-version: '3.1'
-
-services:
-
-  ghost:
+ ghost:
     image: ghcr.io/romaxa55/ghost-cms-in-docker:master
-    restart: always
-    ports:
-      - 8080:2368
+    deploy:
+      replicas: 6
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.ghost.rule=Host(`roshamagin.site`)
+        - traefik.http.routers.ghost.entrypoints=web
+        - traefik.http.routers.ghost.middlewares=redirect-to-https
+        - traefik.http.routers.ghost-secured.rule=Host(`roshamagin.site`)
+        - traefik.http.routers.ghost-secured.entrypoints=websecure
+        - traefik.http.routers.ghost-secured.tls.certresolver=myresolver
+        - traefik.http.services.ghost.loadbalancer.server.port=2368
     environment:
-      # see https://ghost.org/docs/config/#configuration-options
-      database__client: mysql
-      database__connection__host: db
-      database__connection__user: root
-      database__connection__password: example
-      database__connection__database: ghost
-      # this url value is just an example, and is likely wrong for your environment!
-      url: http://localhost:8080
-      # contrary to the default mentioned in the linked documentation, this image defaults to NODE_ENV=production (so development mode needs to be explicitly specified if desired)
-      #NODE_ENV: development
+      - database__client=sqlite3
+      - database__connection__filename=/var/lib/ghost/content/data/ghost.db
+      - url=https://roshamagin.site
+      - NODE_ENV=production
+    networks:
+      - postgres-network # i use exterrnal network
+    volumes:
+      - /mnt/glusterfs:/var/lib/ghost/content # i use glusterfs Cluster Filesystem
 
-  db:
-    image: mysql:8.0
-    restart: always
+  traefik:
+    image: traefik:latest
+    command:
+      - --providers.docker=true
+      - --providers.docker.swarmMode=true
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.dnschallenge=true
+      - --certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.myresolver.acme.email=info@roshamagin.site
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      - CF_DNS_API_TOKEN=$CF_API_KEY # use export CF_API_KEY=token clioudflare
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /mnt/glusterfs/letsencrypt:/letsencrypt
+    networks:
+      - postgres-network
+    deploy:
+      labels:
+        - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      placement:
+        constraints:
+          - node.role == manager
