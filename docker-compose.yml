@@ -1,3 +1,6 @@
+version: '3.8'
+
+services:
  ghost:
     image: ghcr.io/romaxa55/ghost-cms-in-docker:master
     deploy:
@@ -12,10 +15,10 @@
         - traefik.http.routers.ghost-secured.tls.certresolver=myresolver
         - traefik.http.services.ghost.loadbalancer.server.port=2368
     environment:
-      - database__client=sqlite3
-      - database__connection__filename=/var/lib/ghost/content/data/ghost.db
-      - url=https://roshamagin.site
-      - NODE_ENV=production
+      database__client: sqlite3
+      database__connection__filename: /var/lib/ghost/content/data/ghost.db
+      url: https://roshamagin.site
+      NODE_ENV: production
     networks:
       - postgres-network # i use exterrnal network
     volumes:
@@ -34,7 +37,7 @@
       - --certificatesresolvers.myresolver.acme.email=info@roshamagin.site
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
     environment:
-      - CF_DNS_API_TOKEN=$CF_API_KEY # use export CF_API_KEY=token clioudflare
+      CF_DNS_API_TOKEN: $CF_API_KEY # use export CF_API_KEY=token clioudflare
     ports:
       - 80:80
       - 443:443
