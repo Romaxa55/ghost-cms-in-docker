@@ -1,8 +1,18 @@
 version: '3.8'
 
 services:
- ghost:
+
+  ghost:
     image: ghcr.io/romaxa55/ghost-cms-in-docker:master
+    networks:
+      - postgres-network # i use exterrnal network
+    volumes:
+      - /mnt/glusterfs:/var/lib/ghost/content # i use glusterfs Cluster Filesystem
+    environment:
+      database__client: sqlite3
+      database__connection__filename: /var/lib/ghost/content/data/ghost.db
+      url: https://roshamagin.site
+      NODE_ENV: production
     deploy:
       replicas: 6
       labels:
@@ -14,15 +24,6 @@ services:
         - traefik.http.routers.ghost-secured.entrypoints=websecure
         - traefik.http.routers.ghost-secured.tls.certresolver=myresolver
         - traefik.http.services.ghost.loadbalancer.server.port=2368
-    environment:
-      database__client: sqlite3
-      database__connection__filename: /var/lib/ghost/content/data/ghost.db
-      url: https://roshamagin.site
-      NODE_ENV: production
-    networks:
-      - postgres-network # i use exterrnal network
-    volumes:
-      - /mnt/glusterfs:/var/lib/ghost/content # i use glusterfs Cluster Filesystem
 
   traefik:
     image: traefik:latest
@@ -52,3 +53,7 @@ services:
       placement:
         constraints:
           - node.role == manager
+
+networks:
+  postgres-network:
+    external: true
