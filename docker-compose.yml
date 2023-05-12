@@ -14,7 +14,7 @@ services:
       url: https://roshamagin.site
       NODE_ENV: production
     deploy:
-      replicas: 6
+      mode: host
       labels:
         - traefik.enable=true
         - traefik.http.routers.ghost.rule=Host(`roshamagin.site`)
@@ -48,8 +48,10 @@ services:
     networks:
       - postgres-network
     deploy:
+      mode: host
       labels:
         - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+        - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
       placement:
         constraints:
           - node.role == manager
