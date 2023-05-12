@@ -24,6 +24,9 @@ services:
         - traefik.http.routers.ghost-secured.entrypoints=websecure
         - traefik.http.routers.ghost-secured.tls.certresolver=myresolver
         - traefik.http.services.ghost.loadbalancer.server.port=2368
+      placement:
+        constraints:
+          - node.role == manager
 
   traefik:
     image: traefik:latest
@@ -52,9 +55,9 @@ services:
       labels:
         - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
         - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
-#      placement:
-#        constraints:
-#          - node.role == manager
+      placement:
+        constraints:
+          - node.role == manager
 
 networks:
   postgres-network:
