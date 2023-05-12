@@ -52,9 +52,9 @@ services:
       labels:
         - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
         - traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true
-      placement:
-        constraints:
-          - node.role == manager
+#      placement:
+#        constraints:
+#          - node.role == manager
 
 networks:
   postgres-network:
