@@ -9,11 +9,11 @@ services:
       - public
     environment:
       database__client: mysql
-#      database__connection__host: proxysql
-      database__connection__host: mariadb-galera-1
+      database__connection__host: proxysql
+#      database__connection__host: mariadb-galera-1
       database__connection__user: ghost
-#      database__connection__port: 6033
-      database__connection__port: 3306
+      database__connection__port: 6033
+#      database__connection__port: 3306
       database__connection__password: ghost_password
       database__connection__database: ghost_cms
       url: https://roshamagin.site
@@ -27,7 +27,6 @@ services:
         - traefik.http.routers.ghost.entrypoints=websecure
         - traefik.http.routers.ghost.tls.certresolver=myresolver
         - traefik.http.services.ghost.loadbalancer.server.port=2368
-
 
 networks:
   public:
