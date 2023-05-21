@@ -11,6 +11,7 @@ services:
       database__client: mysql
       database__connection__host: proxysql
       database__connection__user: ghost_cms
+      database__connection__port: 6032
       database__connection__password: ghost_password
       database__connection__database: ghost_cms
       url: https://roshamagin.site
