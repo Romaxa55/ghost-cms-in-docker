@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   ghost:
-    image: ghcr.io/romaxa55/ghost-cms-in-docker:master
+    image: ghost:latest
     networks:
       - galera_galera-network
       - public
