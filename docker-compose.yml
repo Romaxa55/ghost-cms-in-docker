@@ -7,6 +7,8 @@ services:
     networks:
       - galera_galera-network
       - public
+    volumes:
+      - content:/var/lib/ghost/content
     environment:
       database__client: mysql
       database__connection__host: proxysql
@@ -33,3 +35,7 @@ networks:
     external: true
   galera_galera-network:
     external: true
+
+volumes:
+  content:
+    driver: local
