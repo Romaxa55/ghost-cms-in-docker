@@ -37,7 +37,7 @@ services:
 networks:
   public:
     external: true
-  galera_galera-network:
+  galera-network:
     external: true
 
 volumes:
