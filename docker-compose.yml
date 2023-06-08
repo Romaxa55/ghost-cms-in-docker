@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   ghost:
-    image: ghost:latest
+    image: ghost:5.49.3
     networks:
       - galera_galera-network
       - public
