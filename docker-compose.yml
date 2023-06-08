@@ -23,7 +23,7 @@ services:
       mail__options__auth__pass: ${MAILGUN_PASSWORD:-}
       mail__from: DevOps Diaries <noreply@roshamagin.com>
       url: https://roshamagin.site
-      NODE_ENV: production
+      NODE_ENV: development
     deploy:
       replicas: 1
       labels:
