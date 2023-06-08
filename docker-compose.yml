@@ -25,7 +25,7 @@ services:
       url: https://roshamagin.site
       NODE_ENV: production
     deploy:
-      replicas: 3
+      replicas: 1
       labels:
         - traefik.enable=true
         - traefik.http.routers.ghost.tls=true
