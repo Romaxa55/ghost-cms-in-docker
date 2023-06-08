@@ -5,7 +5,7 @@ services:
   ghost:
     image: ghost:5.43
     networks:
-      - galera_galera-network
+      - galera-network
       - public
     volumes:
       - content:/var/lib/ghost/content
