@@ -21,9 +21,9 @@ services:
       mail__options__port: 587
       mail__options__auth__user: ${MAILGUN_USER:-}
       mail__options__auth__pass: ${MAILGUN_PASSWORD:-}
-      mail__from: DevOps Diaries <info@roshamagin.com>
+      mail__from: DevOps Diaries <noreply@roshamagin.com>
       url: https://roshamagin.site
-      NODE_ENV: development
+      NODE_ENV: production
     deploy:
       replicas: 1
       labels:
