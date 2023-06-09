@@ -25,7 +25,6 @@ services:
       mail__options__auth__pass: ${MAILGUN_PASSWORD:-}
       mail__from: "DevOps Diaries <info@roshamagin.site>"
       url: https://roshamagin.site
-      admin__url: https://roshamagin.site/adm
       admin__redirects: 'true'
       NODE_ENV: production
     deploy:
