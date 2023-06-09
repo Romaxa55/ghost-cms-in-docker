@@ -17,12 +17,16 @@ services:
       database__connection__password: ghost_password
       database__connection__database: ghost_cms
       mail__transport: SMTP
+      mail__options__service: Mailgun
       mail__options__host: smtp.eu.mailgun.org
-      mail__options__port: 587
+      mail__options__port: 465
+      mail__options__secure: 'true'
       mail__options__auth__user: ${MAILGUN_USER:-}
       mail__options__auth__pass: ${MAILGUN_PASSWORD:-}
-      mail__from: DevOps Diaries <noreply@roshamagin.com>
+      mail__from: "DevOps Diaries <info@roshamagin.site>"
       url: https://roshamagin.site
+      admin__url: https://roshamagin.site/adm
+      admin__redirects: 'true'
       NODE_ENV: production
     deploy:
       replicas: 1
