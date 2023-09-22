@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: on-failure
+    environment:
+      CF_DNS_API_TOKEN: $CF_DNS_API_TOKEN # use export CF_API_KEY=token clioudflare
+      DOMAIN: $DOMAIN
+    command:
+      - --log=false
+      - --log.level=INFO
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+      -  --providers.docker.network=public
+      - --providers.docker
+      - --providers.docker.swarmMode=false
+      - --providers.docker.swarmModeRefreshSeconds=1
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.watch=true
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.dnschallenge=true
+      - --certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.myresolver.acme.email=info@${DOAMIN}
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - "--api.insecure=false" # Включить панель управления
+      - "--api.dashboard=false" # Включить панель управления
+    ports:
+      - target: 5443
+        published: 5443
+        protocol: tcp
+        mode: host
+    networks: [ public ]
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - letsencrypt:/letsencrypt
+    labels:
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+
+volumes:
+  letsencrypt:
+
+networks:
+  public:
+    name: public
+    attachable: true
