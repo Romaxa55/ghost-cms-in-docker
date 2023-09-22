@@ -28,8 +28,6 @@ services:
       url: https://roshamagin.site
       admin__redirects: 'true'
       NODE_ENV: production
-    ports:
-      - '2368:2368'
     labels:
       - traefik.enable=true
       - traefik.http.routers.ghost.tls=true
