@@ -23,7 +23,7 @@ services:
       mail__options__secure: 'true'
       mail__options__auth__user: ${MAILGUN_USER:-}
       mail__options__auth__pass: ${MAILGUN_PASSWORD:-}
-      mail__from: "DevOps Diaries <info@${DOMAIN}>"
+      mail__from: "DevOps Diaries <info@roshamagin.site>"
       url: https://roshamagin.site
       admin__redirects: 'true'
       NODE_ENV: production
