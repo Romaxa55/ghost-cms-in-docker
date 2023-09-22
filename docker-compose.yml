@@ -32,7 +32,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.ghost.tls=true
-      - traefik.http.routers.ghost.rule=Host(`$DOMAIN`)
+      - traefik.http.routers.ghost.rule=Host(`roshamagin.site`)
       - traefik.http.routers.ghost.entrypoints=websecure
       - traefik.http.routers.ghost.tls.certresolver=myresolver
       - traefik.http.services.ghost.loadbalancer.server.port=2368
