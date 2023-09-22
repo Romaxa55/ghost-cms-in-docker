@@ -9,6 +9,7 @@ services:
       - public
     volumes:
       - content:/var/lib/ghost/content
+    restart: on-failure
     environment:
       database__client: mysql
       database__connection__host: db
