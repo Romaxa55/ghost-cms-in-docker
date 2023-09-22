@@ -40,15 +40,18 @@ services:
         - traefik.http.services.ghost.loadbalancer.server.port=2368
 
   db:
-    image: mariadb
+    image: mariadb:11.1.2
     restart: always
     networks: [ ghostcms ]
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-}
-      MARIADB_ALLOW_EMPTY_PASSWORD: 1
+      MARIADB_ALLOW_EMPTY_PASSWORD: 'yes'
+      MARIADB_ROOT_HOST: "localhost"
       MARIADB_DATABASE: ${MARIADB_DATABASE:-ghost_cms}
       MARIADB_USER: ${MARIADB_USER:-ghost}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD:-ghost_password}
+    volumes:
+      - ./db:/var/lib/mysq
 networks:
   public:
     external: true
