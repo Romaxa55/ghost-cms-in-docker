@@ -37,7 +37,7 @@ services:
       - traefik.http.routers.ghost.entrypoints=websecure
       - traefik.http.routers.ghost.tls.certresolver=myresolver
       - traefik.http.services.ghost.loadbalancer.server.port=2368
-    depends_on: db
+    depends_on: [ db ]
 
   db:
     image: mariadb:11.1.2
