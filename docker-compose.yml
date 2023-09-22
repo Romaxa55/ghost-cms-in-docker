@@ -51,7 +51,7 @@ services:
       MARIADB_USER: ${MARIADB_USER:-ghost}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD:-ghost_password}
     volumes:
-      - ./db:/var/lib/mysq
+      - db:/var/lib/mysq
 networks:
   public:
     external: true
@@ -60,4 +60,5 @@ networks:
 volumes:
   content:
     driver: local
-
+  db:
+    driver: local
