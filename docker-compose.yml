@@ -43,7 +43,7 @@ services:
     networks: [ ghostcms ]
     environment:
 #      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-}
-      MARIADB_ALLOW_EMPTY_PASSWORD: 'yes'
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
       MARIADB_ROOT_HOST: "localhost"
       MARIADB_DATABASE: ${MARIADB_DATABASE:-ghost_cms}
       MARIADB_USER: ${MARIADB_USER:-ghost}
